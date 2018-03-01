@@ -1,0 +1,17 @@
+{
+	"name": "RNDevServer",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"repository": "git@github.com:SecretCastle/RNDevServer.git",
+	"author": "SecretCastle <chenfangzhong@hotmail.com>",
+	"dependencies": {
+		"debug": "^3.1.0",
+		"express": "^4.16.2",
+		"node-dev": "^3.1.3",
+		"socket.io": "^2.0.4"
+	},
+	"scripts": {
+		"start": "node-dev server/index.js"
+	}
+}
