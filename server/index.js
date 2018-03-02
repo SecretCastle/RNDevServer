@@ -1,24 +1,30 @@
 /**
- * 初始化文件
+ * websocket
  */
-const express = require('express');
-const app = express();
-const debug = require('debug')('http');
 
-// require('./socket/server');
-// 启动websocket的中间件
-const startWebsocketMiddleware = (req, res, next) => {
-    next();
+const WebSocket = require('ws');
+const debug = require('debug')('socket');
+const socketLog = require('../utils/log').socketLog;
+
+// 创建wss
+const wss = new WebSocket.Server({
+    port: 9901
+});
+
+
+const msgIncoming = (data) => {
+    console.log(data);
 }
 
-app.use(express.static('public'));
-app.use(startWebsocketMiddleware);
-app.get('/', (req, res) => {
-    res.send('./public/index.html');
-});
+const connection = (ws, req) => {
+    socketLog('websocket connected');
+    // 接收数据
+    ws.on('message', msgIncoming);
+    
+    // error
+    ws.on('error', () => console.log('客户端下线'));
+}
 
-app.listen(9090, () => {
-    debug('server run at: http://localhost:9090')
-});
-
+// 链接上
+wss.on('connection', connection);
 
