@@ -22,7 +22,6 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>标示</th>
                             <th>参数名称</th>
                             <th>值</th>
                             <th>操作</th>
@@ -30,18 +29,27 @@
                     </thead>
                     <tbody>
                         <tr v-for="(item, index) in datasource">
-                            <td>{{index}}</td>
-                            <td><input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"></td>
-                            <td><input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"></td>
-                            <td><a class="btn btn-primary" role="button">删除</a></td>
+                            <td><input type="text" class="form-control" aria-label="Username" :value="item.key" v-on:blur="iptKeyFn" :data-index="index"  aria-describedby="basic-addon1"></td>
+                            <td><input type="text" class="form-control" aria-label="Username" :value="item.value" v-on:blur="ipValueFn" :data-index="index" aria-describedby="basic-addon1"></td>
+                            <td><a class="btn btn-primary" role="button" :data-index="index" v-on:click="deleteFn" style="color: #fff">删除</a> | <a class="btn btn-primary" role="button" :data-index="index" v-on:click="singleSend" style="color: #fff;">下发</a></td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="row">
+                    <button type="button" class="btn btn-primary" style="width: 150px; margin-right: 10px;" v-on:click="sendData">全部下发</button>
+                    <button type="button" class="btn btn-secondary" style="width: 150px" v-on:click="resetData">重置</button>
+                </div>
             </div>
 
             <div style="line-height: 70px;">数据展示</div>
             <div class="card card-body" style="padding: 10px 0; margin-top: 5px;">
-                
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="item in DataRecord">
+                        <p>时间: {{item.data.time}}</p>
+                        <p>下发:{{ item.data.send }}</p>
+                        <p>上报: {{ item.data.data }}</p>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -50,25 +58,63 @@
             el: '#app',
             data: {
                 msg: 'Welcome To Control Panel',
-                datasource: [{
-                    key: '',
-                    value: ''
-                }]
+                datasource: [],
+                DataRecord: []
             },
             mounted() {
+                var that = this;
                 this.client = new WebSocket('ws://localhost:9901');
                 this.client.onopen = function () {
                     console.log('客户端链接成功');
                     // socket.send('hi')
                 }
                 this.client.onmessage = function(message) {
-                    console.log('接受message');
-                    console.log(message);
+                    if (JSON.parse(message.data).meta.code === 0) {
+                        // 渲染数据于"数据展示"
+                        that.DataRecord.push(
+                            JSON.parse(message.data)
+                        );
+                    }
                 }
             },
             methods: {
                 addRow() {
                     this.datasource.push({ key: '', value: ''})
+                },
+                sendData() {
+                    const data = JSON.stringify(this.datasource);
+                    console.log('下发的指令为', data);
+                    this.client.send(data);
+                },
+                resetData() {
+                    // 简易的清除每一项数据
+                    this.datasource.forEach(ele => {
+                        ele.key = '';
+                        ele.value = '';
+                    });
+                },
+                // "key"方法
+                iptKeyFn(e) {
+                    const index = e.target.attributes["data-index"].value;
+                    this.datasource[index]["key"] = e.target.value
+                },
+                // "value"方法
+                ipValueFn(e) {
+                    const index = e.target.attributes["data-index"].value;
+                    this.datasource[index]["value"] = e.target.value;
+                },
+                // 删除某一项
+                deleteFn(e) {
+                    const index = e.target.attributes["data-index"].value;
+                    this.datasource.splice(index, 1);
+                },
+
+                // 单个下发
+                singleSend(e) {
+                    const index = e.target.attributes["data-index"].value;
+                    const data = JSON.stringify([this.datasource[index]]);
+                    console.log('下发的单个指令', data);
+                    this.client.send(data);
                 }
             }
         })
