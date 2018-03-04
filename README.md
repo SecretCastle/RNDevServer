@@ -4,9 +4,7 @@
 
 ### 确保webview调试的项目中安装的依赖
 
-```
-yarn add socket.io --S
-```
+暂无
 
 ### 版本
 
