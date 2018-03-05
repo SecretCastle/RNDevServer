@@ -31,12 +31,12 @@
                         <tr v-for="(item, index) in datasource">
                             <td><input type="text" class="form-control" aria-label="Username" :value="item.key" v-on:blur="iptKeyFn" :data-index="index"  aria-describedby="basic-addon1"></td>
                             <td><input type="text" class="form-control" aria-label="Username" :value="item.value" v-on:blur="ipValueFn" :data-index="index" aria-describedby="basic-addon1"></td>
-                            <td><a class="btn btn-primary" role="button" :data-index="index" v-on:click="deleteFn" style="color: #fff">删除</a> | <a class="btn btn-primary" role="button" :data-index="index" v-on:click="singleSend" style="color: #fff;">下发</a></td>
+                            <td><a class="btn btn-primary" role="button" :data-index="index" v-on:click="deleteFn" style="color: #fff">删除</a> | <a class="btn btn-primary" role="button" :data-index="index" v-on:click="singleSend" style="color: #fff;">上报</a></td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="row">
-                    <button type="button" class="btn btn-primary" style="width: 150px; margin-right: 10px;" v-on:click="sendData">全部下发</button>
+                    <button type="button" class="btn btn-primary" style="width: 150px; margin-right: 10px;" v-on:click="sendData">全部上报</button>
                     <button type="button" class="btn btn-secondary" style="width: 150px" v-on:click="resetData">重置</button>
                 </div>
             </div>

@@ -31,7 +31,11 @@ const msgIncoming = (data, ws) => {
     const factoriedData = dataFactory(JSON.parse(data));
     Device.SyncDataToDevice(factoriedData, (res) => {
         if (res.meta.code === 0) {
-            ws.send(JSON.stringify(res));
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(res));
+                }
+            });
         }
     })
 }
