@@ -18,8 +18,13 @@ const dataFactory = (data) => {
         return data;
     }
     data.forEach(ele => {
-        newObj[ele.key] = ele.value;
+        if (ele.key) {
+            newObj[ele.key] = ele.value;
+        } else {
+            Object.assign(newObj, ele)
+        }
     });
+    console.log(newObj);
     return newObj;
 }
 
@@ -37,14 +42,13 @@ const msgIncoming = (data, ws) => {
                 }
             });
         }
-    })
+    });
 }
 
 const connection = (ws, req) => {
     socketLog('websocket connected', ws);
     // 接收数据
     ws.on('message', (data) => { msgIncoming(data, ws) } );
-    
     // error
     ws.on('error', () => console.log('客户端下线'));
 }

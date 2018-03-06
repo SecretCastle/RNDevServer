@@ -46,7 +46,6 @@
                 <ul class="list-group">
                     <li class="list-group-item" v-for="item in DataRecord" style="margin-bottom: 5px;">
                         <p>时间: {{item.data.time}}</p>
-                        <p>下发:{{ item.data.send }}</p>
                         <p>上报: {{ item.data.data }}</p>
                     </li>
                 </ul>
@@ -69,6 +68,7 @@
                     // socket.send('hi')
                 }
                 this.client.onmessage = function(message) {
+                    console.log(message);
                     if (JSON.parse(message.data).meta.code === 0) {
                         // 渲染数据于"数据展示"
                         that.DataRecord.push(
