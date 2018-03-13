@@ -43,7 +43,8 @@
 
             <div style="line-height: 70px;">数据展示</div>
             <div class="card card-body" style="padding: 10px 0; margin-top: 5px;">
-                <ul class="list-group">
+                <button type="button" class="btn btn-secondary" style="width: 150px; margin-left: 10px" v-on:click="clearLog">清空log</button>
+                <ul class="list-group" id="logUL">
                     <li class="list-group-item" v-for="item in DataRecord" style="margin-bottom: 5px;">
                         <p>时间: {{item.data.time}}</p>
                         <p>上报: {{ item.data.data }}</p>
@@ -115,6 +116,9 @@
                     const data = JSON.stringify([this.datasource[index]]);
                     console.log('下发的单个指令', data);
                     this.client.send(data);
+                },
+                clearLog() {
+                    $('#logUL').empty();
                 }
             }
         })
