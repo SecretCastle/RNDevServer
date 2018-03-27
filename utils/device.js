@@ -19,6 +19,7 @@ const Device = {
     SyncDataToDevice(data, callback) {
         if (data) {
             setTimeout(() => {
+                console.log('callback to app');
                 callback({
                     meta: {
                         code: 0,

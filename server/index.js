@@ -17,23 +17,31 @@ const dataFactory = (data) => {
     if (typeof data !== "object") {
         return data;
     }
-    data.forEach(ele => {
-        if (ele.key) {
-            newObj[ele.key] = ele.value;
-        } else {
-            Object.assign(newObj, ele)
-        }
-    });
-    console.log(newObj);
-    return newObj;
+    if (Object.prototype.toString.call(data) === '[object Array]') {
+        data.forEach(ele => {
+            if (ele.key) {
+                newObj[ele.key] = ele.value;
+            } else {
+                Object.assign(newObj, ele)
+            }
+        });
+        return newObj;
+    }
+    return data;
 }
 
 const msgIncoming = (data, ws) => {
+    console.log(data);
     // 处理数据
     if (typeof data !== 'string') {
         throw new Error('传入值错误');
     }
-    const factoriedData = dataFactory(JSON.parse(data));
+    let factoriedData = {};
+    if (JSON.parse(data).dp_value) {
+        factoriedData = dataFactory(JSON.parse(data).dp_value);
+    } else {
+        factoriedData = dataFactory(JSON.parse(data));
+    }
     Device.SyncDataToDevice(factoriedData, (res) => {
         if (res.meta.code === 0) {
             wss.clients.forEach(client => {
